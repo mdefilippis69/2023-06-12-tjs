@@ -2,11 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import PropTypes from 'prop-types'
 import style from './Chat.module.css'
-import { WS_ADR } from '../../../config/config'
+import { CHAT_ROOM_NAME, WS_ADR } from '../../../config/config'
+import { CircleFill } from 'react-bootstrap-icons';
 
 const Chat = () => {
 
-  const [socketUrl, setSocketUrl] = useState(WS_ADR);
+  const [socketUrl, setSocketUrl] = useState(WS_ADR+CHAT_ROOM_NAME);
   const [messageHistory, setMessageHistory] = useState([]);
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
 
@@ -33,6 +34,11 @@ const Chat = () => {
 
   return (
     <div className={style.Chat} data-testid="Chat">
+      <span>Statut connexion : </span>
+      {connectionStatus === 'Open' ? <CircleFill color='green'/>
+       : connectionStatus === 'Closed' ? <CircleFill color='red'/> 
+       : <CircleFill color='purple'/>}
+      <br/>
       <textarea id="chat-log" cols="100" rows="20"></textarea><br/>
       <input id="chat-message-input" type="text" size="100"/><br/>
       <button
@@ -40,9 +46,7 @@ const Chat = () => {
         disabled={readyState !== ReadyState.OPEN}
       >
         Envoyer
-      </button><br/>
-      <span className='ws-status'>The WebSocket is currently {connectionStatus}</span>
-      
+      </button>      
     </div>
   )
 }

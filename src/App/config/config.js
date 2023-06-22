@@ -17,3 +17,4 @@ export const patchsURI=Object.freeze({
 })
 
 export const WS_ADR="ws://localhost:8000/ws/patch/"
+export const CHAT_ROOM_NAME="chat/"
