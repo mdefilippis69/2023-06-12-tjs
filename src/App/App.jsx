@@ -12,6 +12,7 @@ import {
 import Editor from './pages/editor'
 import  { MemeThumbnailStoreConnected } from './components/ui/MemeThumbnail/MemeThumbnail'
 import { PatchListStoreConnected } from './components/ui/PatchList/PatchList'
+import Chat from './components/ui/Chat/Chat'
 
 const App = () => {
   //chargement de datas post 1er montage (fetch si besoin) 
@@ -30,6 +31,7 @@ const App = () => {
           <Route path='/meme' element={<Editor/>} />
           <Route path='/meme/:id' element={<Editor/>} />
           <Route path='/patchs' element={<PatchListStoreConnected/>}/>
+          <Route path='/chat' element={<Chat/>}/>
         </Routes>
         <Footer />
       </FlexV3Grow>

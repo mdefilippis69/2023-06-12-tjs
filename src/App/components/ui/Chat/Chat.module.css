@@ -1,0 +1,14 @@
+.Chat {}
+
+textarea {
+    margin: 5px;
+    pointer-events: None;
+}
+
+input {
+    margin: 5px;
+}
+
+button {
+    margin: 5px;
+}

@@ -31,6 +31,9 @@ const NavBar = (props) => {
             <LinkContainer to="/patchs">
               <Nav.Link href="/patchs">Patchs</Nav.Link>
             </LinkContainer>
+            <LinkContainer to="/chat">
+              <Nav.Link href="/chat">Chat</Nav.Link>
+            </LinkContainer>
           </Nav>
         </Container>
       </Navbar>
