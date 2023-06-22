@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { REST_ADR, ressourcesURI } from '../config/config';
-
+import { REST_ADR, ressourcesURI, PATCHS_ADR, patchsURI } from '../config/config';
 const initialState = {
     images: [],
-    memes: []
+    memes: [],
+    patchs: []
 }
 
 const ressourcesSlice = createSlice({
@@ -16,6 +16,8 @@ const ressourcesSlice = createSlice({
             state.images.push(...action.payload.images)
             state.memes.splice(0);
             state.memes.push(...action.payload.memes)
+            state.patchs.splice(0)
+            state.patchs.push(...action.payload.patchs)
         })
         builder.addCase('current/save/fulfilled',(state,action)=>{
             const position=state.memes.findIndex(m=>m.id===action.payload)
@@ -31,7 +33,11 @@ export const fetchAllRessources = createAsyncThunk('ressources/fetchRessources',
     async () => {
         const promiseImages = await fetch(`${REST_ADR}${ressourcesURI.images}`)
         const promiseMemes = await fetch(`${REST_ADR}${ressourcesURI.memes}`)
-        const jsoI= await promiseImages.json();const jsoM= await promiseMemes.json() 
-        return {memes:jsoM,images:jsoI}
+        const promisePatchs = await fetch(`${PATCHS_ADR}${patchsURI.all}`)
+        const jsoI= await promiseImages.json();
+        const jsoM= await promiseMemes.json()
+        const jsoP = await promisePatchs.json()
+        return {memes:jsoM,images:jsoI, patchs:jsoP}
     })
+
 export default ressourcesSlice.reducer

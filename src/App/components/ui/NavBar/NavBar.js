@@ -28,6 +28,9 @@ const NavBar = (props) => {
             <LinkContainer to="/meme/1">
               <Nav.Link href="/meme/1">Edit id:1</Nav.Link>
             </LinkContainer>
+            <LinkContainer to="/patchs">
+              <Nav.Link href="/patchs">Patchs</Nav.Link>
+            </LinkContainer>
           </Nav>
         </Container>
       </Navbar>

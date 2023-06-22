@@ -11,6 +11,7 @@ import {
 } from 'react-router-dom'
 import Editor from './pages/editor'
 import  { MemeThumbnailStoreConnected } from './components/ui/MemeThumbnail/MemeThumbnail'
+import { PatchListStoreConnected } from './components/ui/PatchList/PatchList'
 
 const App = () => {
   //chargement de datas post 1er montage (fetch si besoin) 
@@ -28,6 +29,7 @@ const App = () => {
           <Route path='/thumbnail' element={<MemeThumbnailStoreConnected/>} />
           <Route path='/meme' element={<Editor/>} />
           <Route path='/meme/:id' element={<Editor/>} />
+          <Route path='/patchs' element={<PatchListStoreConnected/>}/>
         </Routes>
         <Footer />
       </FlexV3Grow>

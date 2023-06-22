@@ -9,3 +9,11 @@ export const ressourcesURI=Object.freeze({
     memes:'/memes',
     images:'/images'
 })
+
+export const PATCHS_ADR="http://localhost:8000/patch"
+
+export const patchsURI=Object.freeze({
+    all:'/all'
+})
+
+export const WS_ADR="ws://localhost:8000/ws/patch/"

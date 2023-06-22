@@ -1,0 +1,22 @@
+.PatchList {}
+
+table {
+    width: 100%;
+}
+
+th {
+    background-color: #04AA6D;
+    color: white;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+}
+
+tr:nth-child(even){background-color: #f2f2f2;}
+
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+tr:hover {background-color: #ddd;}
