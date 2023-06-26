@@ -32,10 +32,10 @@ PatchList.propTypes = {
 export default PatchList
 
 export const PatchListStoreConnected = (props) => {
-  const ressources = useSelector(s => s.ressources)
+  const patchs = useSelector(s => {return s.ressources.patchs})
   return (
     <PatchList
       {...props}
-      {...ressources}/>
+      patchs={patchs}/>
   )
 }
