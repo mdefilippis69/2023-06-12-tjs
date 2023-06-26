@@ -1,15 +1,36 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, CSSProperties } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import PropTypes from 'prop-types'
 import style from './Chat.module.css'
 import { CHAT_ROOM_NAME, WS_ADR } from '../../../config/config'
 import { CircleFill } from 'react-bootstrap-icons';
+import { ClipLoader } from 'react-spinners';
 
 const Chat = () => {
 
+  const override: CSSProperties = {
+    display: "inline-block",
+    margin: "0 auto"
+  }
+
   const [socketUrl, setSocketUrl] = useState(WS_ADR+CHAT_ROOM_NAME);
   const [messageHistory, setMessageHistory] = useState([]);
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+  const { sendMessage, lastMessage, readyState, getWebSocket } = useWebSocket(
+    socketUrl,
+    {
+      shouldReconnect: (closeEvent) => true,
+      onClose: (closeEvent) => {
+        console.log('fermeture connexion');        
+      },
+      onError: (errorEvent) => {
+        console.log('erreur connexion');
+        document.querySelector('#chat-log').value += 'erreur connexion\n'
+      },
+      onOpen: (openEvent) => {
+        document.querySelector('#chat-log').value += 'Connecté\n'
+      }
+    }
+    );
 
   useEffect(() => {
     if (lastMessage !== null) {
@@ -24,6 +45,15 @@ const Chat = () => {
     document.querySelector('#chat-message-input').value = ''
   }, []);
 
+  const handleClickDisconenct = useCallback(() => {
+    getWebSocket().close();
+  }, []
+  )
+
+  const clearChat = () => {
+    document.querySelector('#chat-log').value = ''
+  }
+
   const connectionStatus = {
     [ReadyState.CONNECTING]: 'Connecting',
     [ReadyState.OPEN]: 'Open',
@@ -34,10 +64,10 @@ const Chat = () => {
 
   return (
     <div className={style.Chat} data-testid="Chat">
-      <span>Statut connexion : </span>
-      {connectionStatus === 'Open' ? <CircleFill color='green'/>
+      <span>Statut connexion : {connectionStatus === 'Open' ? <CircleFill color='green'/>
        : connectionStatus === 'Closed' ? <CircleFill color='red'/> 
-       : <CircleFill color='purple'/>}
+       : <ClipLoader size={20} cssOverride={override} data-testid="ws-loader"/>}
+       </span>      
       <br/>
       <textarea id="chat-log" cols="100" rows="20"></textarea><br/>
       <input id="chat-message-input" type="text" size="100"/><br/>
@@ -46,7 +76,18 @@ const Chat = () => {
         disabled={readyState !== ReadyState.OPEN}
       >
         Envoyer
-      </button>      
+      </button>    
+      <button
+        onClick={handleClickDisconenct}
+        disabled={readyState !== ReadyState.OPEN}
+      >
+        Déconnexion
+      </button>
+      <button
+        onClick={clearChat}
+      >
+        Vider
+      </button> 
     </div>
   )
 }
