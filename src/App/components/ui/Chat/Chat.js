@@ -36,12 +36,19 @@ const Chat = () => {
     if (lastMessage !== null) {
       setMessageHistory((prev) => prev.concat(lastMessage));
       console.log(JSON.parse(lastMessage.data).message)
-      document.querySelector('#chat-log').value += JSON.parse(lastMessage.data).message + '\n'
+      document.querySelector('#chat-log').value += JSON.parse(lastMessage.data).time + ' ' + JSON.parse(lastMessage.data).message + '\n'
     }
   }, [lastMessage, setMessageHistory]);
 
   const handleClickSendMessage = useCallback(() => {
-    sendMessage(document.querySelector('#chat-message-input').value);
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
+    sendMessage(
+      JSON.stringify({
+        "message": document.querySelector('#chat-message-input').value,
+        "time": time
+      })
+      );
     document.querySelector('#chat-message-input').value = ''
   }, []);
 
