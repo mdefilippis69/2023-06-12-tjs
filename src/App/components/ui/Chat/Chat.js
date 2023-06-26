@@ -5,74 +5,50 @@ import style from './Chat.module.css'
 import { CHAT_ROOM_NAME, WS_ADR } from '../../../config/config'
 import { CircleFill } from 'react-bootstrap-icons';
 import { ClipLoader } from 'react-spinners';
+import { useSelector } from 'react-redux';
+import WebsocketConnexion from '../../services/WebsocketConnexion/WebsocketConnexion';
 
 const Chat = () => {
+
+  const status = useSelector(s => s.websocket)
+
+  useEffect(() => {
+    console.log('changement statut connexion : ')
+    console.log(status)
+  }, [status])
+
+  const [triggerDisconnect, setTriggerDisconnect] = useState(0);
 
   const override: CSSProperties = {
     display: "inline-block",
     margin: "0 auto"
   }
 
-  const [socketUrl, setSocketUrl] = useState(WS_ADR+CHAT_ROOM_NAME);
-  const [messageHistory, setMessageHistory] = useState([]);
-  const { sendMessage, lastMessage, readyState, getWebSocket } = useWebSocket(
-    socketUrl,
-    {
-      shouldReconnect: (closeEvent) => true,
-      onClose: (closeEvent) => {
-        console.log('fermeture connexion');        
-      },
-      onError: (errorEvent) => {
-        console.log('erreur connexion');
-        document.querySelector('#chat-log').value += 'erreur connexion\n'
-      },
-      onOpen: (openEvent) => {
-        document.querySelector('#chat-log').value += 'Connecté\n'
-      }
-    }
-    );
+  const displayMessage = (message) => {
+    document.querySelector('#chat-log').value += JSON.parse(message.data).time + ' ' + JSON.parse(message.data).message + '\n'
+  }
 
-  useEffect(() => {
-    if (lastMessage !== null) {
-      setMessageHistory((prev) => prev.concat(lastMessage));
-      console.log(JSON.parse(lastMessage.data).message)
-      document.querySelector('#chat-log').value += JSON.parse(lastMessage.data).time + ' ' + JSON.parse(lastMessage.data).message + '\n'
-    }
-  }, [lastMessage, setMessageHistory]);
+  const handleClickSendMessage = () => {};
 
-  const handleClickSendMessage = useCallback(() => {
-    var today = new Date();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
-    sendMessage(
-      JSON.stringify({
-        "message": document.querySelector('#chat-message-input').value,
-        "time": time
-      })
-      );
-    document.querySelector('#chat-message-input').value = ''
-  }, []);
-
-  const handleClickDisconenct = useCallback(() => {
-    getWebSocket().close();
-  }, []
-  )
+  const handleClickDisconnect = () => {
+    setTriggerDisconnect((triggerDisconnect) => triggerDisconnect+1)
+  }
 
   const clearChat = () => {
     document.querySelector('#chat-log').value = ''
   }
 
-  const connectionStatus = {
-    [ReadyState.CONNECTING]: 'Connecting',
-    [ReadyState.OPEN]: 'Open',
-    [ReadyState.CLOSING]: 'Closing',
-    [ReadyState.CLOSED]: 'Closed',
-    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-  }[readyState];
-
   return (
     <div className={style.Chat} data-testid="Chat">
-      <span>Statut connexion : {connectionStatus === 'Open' ? <CircleFill color='green'/>
-       : connectionStatus === 'Closed' ? <CircleFill color='red'/> 
+      <WebsocketConnexion  
+        address={`${WS_ADR}${CHAT_ROOM_NAME}`}
+        shouldReconnect = {true}
+        onClose={() => {console.log('fermeture connexion')}}
+        onMessage={(message) => {console.log('message reçu : ' + message.data)}}
+        triggerDisconnect={triggerDisconnect}
+      />
+      <span>Statut connexion : {status.status === ReadyState.OPEN ? <CircleFill color='green'/>
+       : status.status === ReadyState.CLOSED ? <CircleFill color='red'/> 
        : <ClipLoader size={20} cssOverride={override} data-testid="ws-loader"/>}
        </span>      
       <br/>
@@ -80,13 +56,13 @@ const Chat = () => {
       <input id="chat-message-input" type="text" size="100"/><br/>
       <button
         onClick={handleClickSendMessage}
-        disabled={readyState !== ReadyState.OPEN}
+        disabled={status.status !== ReadyState.OPEN}
       >
         Envoyer
       </button>    
       <button
-        onClick={handleClickDisconenct}
-        disabled={readyState !== ReadyState.OPEN}
+        onClick={handleClickDisconnect}
+        disabled={status.status !== ReadyState.OPEN}
       >
         Déconnexion
       </button>

@@ -1,12 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import style from './PatchList.module.css'
 import { useSelector } from 'react-redux'
 import { CheckCircle, XCircle } from "react-bootstrap-icons"
+import WebsocketConnexion from '../../services/WebsocketConnexion/WebsocketConnexion'
+import { PATCH_ROOM, WS_ADR } from '../../../config/config'
 
 const PatchList = (props) => {
+
+  const [trigger, setTrigger] = useState(0);
+
   return (
     <div className={style.PatchList} data-testid="PatchList">
+      <WebsocketConnexion  
+        address={`${WS_ADR}${PATCH_ROOM}`}
+        shouldReconnect = {true}
+        onClose={() => {console.log('fermeture connexion')}}
+        onMessage={(message) => {console.log('message reçu : ' + message)}}
+        triggerDisconnect={0}
+      />
       <table>
         <thead>
           <tr>
