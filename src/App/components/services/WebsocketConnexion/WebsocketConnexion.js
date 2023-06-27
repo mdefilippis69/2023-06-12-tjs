@@ -8,7 +8,7 @@ import { update } from '../../../store/websocketSlice';
 export const initialStateWebsocketConnexion={}
 
 const WebsocketConnexion = (props) => {
-  const websocketState = useSelector(s => s.websocket)
+  const messageState = useSelector(s => s.message)
   const storeDispatch=useDispatch()
   const { sendMessage, lastMessage, readyState, getWebSocket } = useWebSocket(
     props.address,
@@ -32,7 +32,7 @@ const WebsocketConnexion = (props) => {
 
     useEffect(() => {
       console.log("etat connexion : " + connectionStatus + '(' + readyState + ')');
-      storeDispatch(update({status: readyState, message: websocketState.message}));
+      storeDispatch(update({status: readyState}));
     }, [readyState])
 
     const connectionStatus = {
@@ -50,8 +50,12 @@ const WebsocketConnexion = (props) => {
     }, [props.triggerDisconnect])
 
     useEffect(() => {
-      sendMessage(JSON.stringify({message: websocketState.message, time: new Date().toLocaleTimeString()}))
-    }, [websocketState.message])
+      console.log('useEffect messageState = ')
+      if(props.triggerSendMessage) {
+        console.log('envoi message')
+        sendMessage(JSON.stringify({message: messageState.message, time: new Date().toLocaleTimeString()}))
+      }      
+    }, [props.triggerSendMessage])
   
   return (<br/>);
 };
@@ -61,7 +65,8 @@ WebsocketConnexion.propTypes = {
   shouldReconnect: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onMessage: PropTypes.func.isRequired,
-  triggerDisconnect: PropTypes.number.isRequired
+  triggerDisconnect: PropTypes.number.isRequired,
+  triggerSendMessage: PropTypes.number.isRequired
 };
 
 WebsocketConnexion.defaultProps = {};

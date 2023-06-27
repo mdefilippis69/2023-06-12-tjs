@@ -7,14 +7,17 @@ import { CircleFill } from 'react-bootstrap-icons';
 import { ClipLoader } from 'react-spinners';
 import { useSelector, useDispatch } from 'react-redux';
 import WebsocketConnexion from '../../services/WebsocketConnexion/WebsocketConnexion';
-import { update } from '../../../store/websocketSlice';
+import { update } from '../../../store/messageSlice';
 
 const Chat = () => {
 
   const websocketState = useSelector(s => s.websocket)
   const storeDispatch=useDispatch()
 
+  const [input, setInput] = useState('')
+
   const [triggerDisconnect, setTriggerDisconnect] = useState(0);
+  const [triggerSendMessage, setTriggerSendMessage] = useState(0)
 
   const override: CSSProperties = {
     display: "inline-block",
@@ -26,8 +29,9 @@ const Chat = () => {
   }
 
   const handleClickSendMessage = () => {
-    storeDispatch(update({status: websocketState.status, message: document.querySelector('#chat-message-input').value}));
-    clearInput()
+    storeDispatch(update({message: document.querySelector('#chat-message-input').value}));
+    setTriggerSendMessage((triggerSendMessage) => triggerSendMessage + 1)
+    setInput('')
   };
 
   const handleClickDisconnect = () => {
@@ -38,10 +42,6 @@ const Chat = () => {
     document.querySelector('#chat-log').value = ''
   }
 
-  const clearInput = () => {
-    document.querySelector('#chat-message-input').value = '';
-  }
-
   return (
     <div className={style.Chat} data-testid="Chat">
       <WebsocketConnexion  
@@ -50,6 +50,7 @@ const Chat = () => {
         onClose={() => {console.log('fermeture connexion')}}
         onMessage={(message) => {displayMessage(message)}}
         triggerDisconnect={triggerDisconnect}
+        triggerSendMessage={triggerSendMessage}
       />
       <span>Statut connexion : {websocketState.status === ReadyState.OPEN ? <CircleFill color='green'/>
        : websocketState.status === ReadyState.CLOSED ? <CircleFill color='red'/> 
@@ -57,10 +58,10 @@ const Chat = () => {
        </span>      
       <br/>
       <textarea id="chat-log" cols="100" rows="20"></textarea><br/>
-      <input id="chat-message-input" type="text" size="100"/><br/>
+      <input id="chat-message-input" type="text" size="100" onChange={(evt) => {setInput(evt.target.value)}} value={input}/><br/>
       <button
         onClick={handleClickSendMessage}
-        disabled={websocketState.status !== ReadyState.OPEN}
+        disabled={websocketState.status !== ReadyState.OPEN || !input}
       >
         Envoyer
       </button>    

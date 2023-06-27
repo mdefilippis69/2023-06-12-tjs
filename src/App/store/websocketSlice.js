@@ -2,17 +2,14 @@ import { createSlice } from "@reduxjs/toolkit";
 import { ReadyState } from "react-use-websocket";
 
 const initialState = {
-    status: ReadyState.UNINSTANTIATED,
-    message: ''
+    status: ReadyState.UNINSTANTIATED
 }
 
 const websocketSlice = createSlice({
     name: 'websocket',
     initialState,
     reducers: {
-        update: (state, action) => {
-            console.log('payload : ' + action.payload)
-            console.log('state : ' + state)
+        update: (state, action) => {            
             Object.assign(state, action.payload)
         }
     }
