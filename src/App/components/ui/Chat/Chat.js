@@ -27,7 +27,7 @@ const Chat = () => {
 
   const handleClickSendMessage = () => {
     storeDispatch(update({status: websocketState.status, message: document.querySelector('#chat-message-input').value}));
-    clearChat()
+    clearInput()
   };
 
   const handleClickDisconnect = () => {
@@ -36,6 +36,10 @@ const Chat = () => {
 
   const clearChat = () => {
     document.querySelector('#chat-log').value = ''
+  }
+
+  const clearInput = () => {
+    document.querySelector('#chat-message-input').value = '';
   }
 
   return (

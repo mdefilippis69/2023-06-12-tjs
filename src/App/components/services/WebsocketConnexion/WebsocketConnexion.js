@@ -43,15 +43,14 @@ const WebsocketConnexion = (props) => {
       [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
     }[readyState];
 
-    useEffect(() => {
-      console.log('trigger : ' + props.triggerDisconnect)
+    useEffect(() => {      
       if(props.triggerDisconnect) {
         getWebSocket().close()
       }
     }, [props.triggerDisconnect])
 
     useEffect(() => {
-      sendMessage({message: websocketState.message, time: 'now'})
+      sendMessage(JSON.stringify({message: websocketState.message, time: new Date().toLocaleTimeString()}))
     }, [websocketState.message])
   
   return (<br/>);
