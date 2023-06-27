@@ -1,7 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ReadyState } from "react-use-websocket";
 
-const initialState = {status: ReadyState.UNINSTANTIATED}
+const initialState = {
+    status: ReadyState.UNINSTANTIATED,
+    message: ''
+}
 
 const websocketSlice = createSlice({
     name: 'websocket',

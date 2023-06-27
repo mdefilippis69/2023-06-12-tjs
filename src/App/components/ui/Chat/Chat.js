@@ -5,17 +5,14 @@ import style from './Chat.module.css'
 import { CHAT_ROOM_NAME, WS_ADR } from '../../../config/config'
 import { CircleFill } from 'react-bootstrap-icons';
 import { ClipLoader } from 'react-spinners';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import WebsocketConnexion from '../../services/WebsocketConnexion/WebsocketConnexion';
+import { update } from '../../../store/websocketSlice';
 
 const Chat = () => {
 
-  const status = useSelector(s => s.websocket)
-
-  useEffect(() => {
-    console.log('changement statut connexion : ')
-    console.log(status)
-  }, [status])
+  const websocketState = useSelector(s => s.websocket)
+  const storeDispatch=useDispatch()
 
   const [triggerDisconnect, setTriggerDisconnect] = useState(0);
 
@@ -28,7 +25,10 @@ const Chat = () => {
     document.querySelector('#chat-log').value += JSON.parse(message.data).time + ' ' + JSON.parse(message.data).message + '\n'
   }
 
-  const handleClickSendMessage = () => {};
+  const handleClickSendMessage = () => {
+    storeDispatch(update({status: websocketState.status, message: document.querySelector('#chat-message-input').value}));
+    clearChat()
+  };
 
   const handleClickDisconnect = () => {
     setTriggerDisconnect((triggerDisconnect) => triggerDisconnect+1)
@@ -44,11 +44,11 @@ const Chat = () => {
         address={`${WS_ADR}${CHAT_ROOM_NAME}`}
         shouldReconnect = {true}
         onClose={() => {console.log('fermeture connexion')}}
-        onMessage={(message) => {console.log('message reçu : ' + message.data)}}
+        onMessage={(message) => {displayMessage(message)}}
         triggerDisconnect={triggerDisconnect}
       />
-      <span>Statut connexion : {status.status === ReadyState.OPEN ? <CircleFill color='green'/>
-       : status.status === ReadyState.CLOSED ? <CircleFill color='red'/> 
+      <span>Statut connexion : {websocketState.status === ReadyState.OPEN ? <CircleFill color='green'/>
+       : websocketState.status === ReadyState.CLOSED ? <CircleFill color='red'/> 
        : <ClipLoader size={20} cssOverride={override} data-testid="ws-loader"/>}
        </span>      
       <br/>
@@ -56,13 +56,13 @@ const Chat = () => {
       <input id="chat-message-input" type="text" size="100"/><br/>
       <button
         onClick={handleClickSendMessage}
-        disabled={status.status !== ReadyState.OPEN}
+        disabled={websocketState.status !== ReadyState.OPEN}
       >
         Envoyer
       </button>    
       <button
         onClick={handleClickDisconnect}
-        disabled={status.status !== ReadyState.OPEN}
+        disabled={websocketState.status !== ReadyState.OPEN}
       >
         Déconnexion
       </button>

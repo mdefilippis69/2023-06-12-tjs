@@ -2,12 +2,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import PropTypes from 'prop-types';
 import styles from './WebsocketConnexion.module.css';
-import { useDispatch} from 'react-redux'
+import { useDispatch, useSelector }from 'react-redux'
 import { update } from '../../../store/websocketSlice';
 
 export const initialStateWebsocketConnexion={}
 
 const WebsocketConnexion = (props) => {
+  const websocketState = useSelector(s => s.websocket)
   const storeDispatch=useDispatch()
   const { sendMessage, lastMessage, readyState, getWebSocket } = useWebSocket(
     props.address,
@@ -31,7 +32,7 @@ const WebsocketConnexion = (props) => {
 
     useEffect(() => {
       console.log("etat connexion : " + connectionStatus + '(' + readyState + ')');
-      storeDispatch(update({status: readyState}));
+      storeDispatch(update({status: readyState, message: websocketState.message}));
     }, [readyState])
 
     const connectionStatus = {
@@ -42,18 +43,16 @@ const WebsocketConnexion = (props) => {
       [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
     }[readyState];
 
-    const handleDisconnect = useCallback(() => {
-      console.log('trigger n : ' + props.triggerDisconnect)      
-      getWebSocket().close();          
-    }, []
-    )
-
     useEffect(() => {
       console.log('trigger : ' + props.triggerDisconnect)
       if(props.triggerDisconnect) {
-        handleDisconnect()
+        getWebSocket().close()
       }
     }, [props.triggerDisconnect])
+
+    useEffect(() => {
+      sendMessage({message: websocketState.message, time: 'now'})
+    }, [websocketState.message])
   
   return (<br/>);
 };
