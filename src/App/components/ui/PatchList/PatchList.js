@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import style from './PatchList.module.css'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { CheckCircle, XCircle, PlayFill } from "react-bootstrap-icons"
 import WebsocketConnexion from '../../services/WebsocketConnexion/WebsocketConnexion'
 import { PATCH_ROOM, WS_ADR } from '../../../config/config'
 import Button from '../Button/Button'
+import { runPipeline } from '../../../store/ressourcesSlice'
 
 const PatchList = (props) => {
 
@@ -17,7 +18,7 @@ const PatchList = (props) => {
         address={`${WS_ADR}${PATCH_ROOM}`}
         shouldReconnect = {true}
         onClose={() => {console.log('fermeture connexion')}}
-        onMessage={(message) => {console.log('message reçu : ' + message)}}
+        onMessage={(message) => {console.log('message reçu : ' + JSON.stringify(message))}}
         triggerDisconnect={0}
         triggerSendMessage={0}
       />
@@ -26,6 +27,7 @@ const PatchList = (props) => {
           <tr>
             <th>Version</th>
             <th>Dernière exécution</th>
+            <th>Id pipeline</th>
             <th>Statut</th>
             <th>Exécuter</th>
           </tr>
@@ -34,8 +36,9 @@ const PatchList = (props) => {
           {props.patchs.map((p, i) => <tr key={'patch-' + i}>
             <td>{p.version}</td>
             <td>{new Date(p.pub_date).toLocaleDateString() + ' ' + new Date(p.pub_date).toLocaleTimeString()}</td>
+            <td>{p.last_pipeline.pipeline_id}</td>
             <td>{p.statut === 'success' ? <CheckCircle color='green'/> : <XCircle color='red'/>} </td>
-            <td><Button><PlayFill/></Button></td>
+            <td><Button onClick={() => {props.onRunPatch(p.id)}}><PlayFill/></Button></td>
           </tr>)}
         </tbody>
       </table>
@@ -44,14 +47,17 @@ const PatchList = (props) => {
 }
 PatchList.propTypes = {
   patchs: PropTypes.array.isRequired,
+  onRunPatch: PropTypes.func.isRequired
 }
 export default PatchList
 
 export const PatchListStoreConnected = (props) => {
   const patchs = useSelector(s => {return s.ressources.patchs})
+  const storeDispatch = useDispatch()
   return (
     <PatchList
       {...props}
-      patchs={patchs}/>
+      patchs={patchs}
+      onRunPatch={(patchId) => {storeDispatch(runPipeline(patchId))}}/>
   )
 }

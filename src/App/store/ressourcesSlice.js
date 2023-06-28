@@ -24,6 +24,12 @@ const ressourcesSlice = createSlice({
             if(position>-1){state.memes[position]=action.payload}
             else { state.memes.push(action.payload)}
         })
+        builder.addCase('ressources/runPipeline/fulfilled', (state, action) => {
+            console.log('payload run : ')
+            console.log(action.payload)
+            const position = state.patchs.findIndex(p => p.id === action.payload.id)
+            if(position > -1){state.patchs[position] = action.payload}
+        })
         builder.addDefaultCase(()=>{})
     }
 });
@@ -39,5 +45,14 @@ export const fetchAllRessources = createAsyncThunk('ressources/fetchRessources',
         const jsoP = await promisePatchs.json()
         return {memes:jsoM,images:jsoI, patchs:jsoP}
     })
+
+export const runPipeline = createAsyncThunk('ressources/runPipeline',
+    async (patchId) => {
+        const promisePatch = await fetch(`${PATCHS_ADR}/${patchId}${patchsURI.run}`)
+        const jsonPatch = await promisePatch.json()
+        console.log(jsonPatch)
+        return jsonPatch
+    }
+)
 
 export default ressourcesSlice.reducer
