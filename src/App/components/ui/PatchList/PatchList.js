@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import style from './PatchList.module.css'
 import { useSelector } from 'react-redux'
-import { CheckCircle, XCircle } from "react-bootstrap-icons"
+import { CheckCircle, XCircle, PlayFill } from "react-bootstrap-icons"
 import WebsocketConnexion from '../../services/WebsocketConnexion/WebsocketConnexion'
 import { PATCH_ROOM, WS_ADR } from '../../../config/config'
+import Button from '../Button/Button'
 
 const PatchList = (props) => {
 
@@ -26,6 +27,7 @@ const PatchList = (props) => {
             <th>Version</th>
             <th>Dernière exécution</th>
             <th>Statut</th>
+            <th>Exécuter</th>
           </tr>
         </thead>
         <tbody>
@@ -33,6 +35,7 @@ const PatchList = (props) => {
             <td>{p.version}</td>
             <td>{new Date(p.pub_date).toLocaleDateString() + ' ' + new Date(p.pub_date).toLocaleTimeString()}</td>
             <td>{p.statut === 'success' ? <CheckCircle color='green'/> : <XCircle color='red'/>} </td>
+            <td><Button><PlayFill/></Button></td>
           </tr>)}
         </tbody>
       </table>

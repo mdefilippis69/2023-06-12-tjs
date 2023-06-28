@@ -1,26 +1,14 @@
 .Button{
-    padding : 5px 10px;
-    background-color: skyblue;
-    color: white;
-    font-weight: 700;
-    text-decoration: underline;
+    background-color: transparent;
+    color: black;
     border:none;
     border-radius: 8px;
-    font-size: x-large;
-    box-shadow: 20px 20px 25px grey;
-    margin-bottom: 15px;
-    margin-right: 10px;
-    margin-top: 5px;
+    padding: 1;
+    margin: 0 auto;
 }
-.Button:hover{
-    box-shadow: 10px 10px 25px grey;
-    border:1px solid white;
+.Button:hover{    
+    background-color: transparent;
 }
-.clicked{
-    box-shadow: 5px 5px 25px grey !important;
-    border:1px solid black !important;
-}
-.Button img{
-    max-width: 32px;
-    height: 32px;
+.Button:active{    
+    transform: translateY(4px);
 }

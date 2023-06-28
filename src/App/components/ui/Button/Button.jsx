@@ -3,15 +3,6 @@ import style from './Button.module.css'
 import PropTypes from 'prop-types'
 const Button = (props) => {
     const [isClicked, setIsClicked] = useState(false)
-    useEffect(() => {
-        let to=undefined;
-        if (isClicked) {
-            setTimeout(() => {setIsClicked(false) }, 400)
-        }
-        return ()=>{
-            clearTimeout(to)
-        }
-    }, [isClicked])
     return (
         <button
             type={props.type}
