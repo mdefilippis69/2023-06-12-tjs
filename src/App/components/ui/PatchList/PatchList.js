@@ -18,6 +18,7 @@ const PatchList = (props) => {
         onClose={() => {console.log('fermeture connexion')}}
         onMessage={(message) => {console.log('message reçu : ' + message)}}
         triggerDisconnect={0}
+        triggerSendMessage={0}
       />
       <table>
         <thead>
