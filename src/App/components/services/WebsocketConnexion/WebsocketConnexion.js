@@ -31,7 +31,6 @@ const WebsocketConnexion = (props) => {
     }, [lastMessage]);
 
     useEffect(() => {
-      console.log("etat connexion : " + connectionStatus + '(' + readyState + ')');
       storeDispatch(update({status: readyState}));
     }, [readyState])
 
@@ -49,10 +48,8 @@ const WebsocketConnexion = (props) => {
       }
     }, [props.triggerDisconnect])
 
-    useEffect(() => {
-      console.log('useEffect messageState = ')
-      if(props.triggerSendMessage) {
-        console.log('envoi message')
+    useEffect(() => {      
+      if(props.triggerSendMessage) {        
         sendMessage(JSON.stringify({message: messageState.message, time: new Date().toLocaleTimeString()}))
       }      
     }, [props.triggerSendMessage])

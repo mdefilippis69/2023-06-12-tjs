@@ -24,7 +24,7 @@ const ressourcesSlice = createSlice({
             if(position>-1){state.memes[position]=action.payload}
             else { state.memes.push(action.payload)}
         })
-        builder.addDefaultCase(()=>{console.log('cas non pris en charge de declenchement par asynThunk')})
+        builder.addDefaultCase(()=>{})
     }
 });
 

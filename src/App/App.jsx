@@ -19,7 +19,6 @@ const App = () => {
   useEffect(() => {
     // store.dispatch(fetchAllRessources())
   }, [])
-  console.log(useParams(),useLocation());
   return (
     <div className="App">
       <FlexV3Grow>
