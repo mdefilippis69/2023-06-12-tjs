@@ -42,6 +42,12 @@ const Chat = () => {
     document.querySelector('#chat-log').value = ''
   }
 
+  const handleKeyDown = (evt) => {
+    if(evt.key === 'Enter'){
+      handleClickSendMessage()
+    }
+  }
+
   return (
     <div className={style.Chat} data-testid="Chat">
       <WebsocketConnexion  
@@ -58,7 +64,11 @@ const Chat = () => {
        </span>      
       <br/>
       <textarea id="chat-log" cols="100" rows="20"></textarea><br/>
-      <input id="chat-message-input" type="text" size="100" onChange={(evt) => {setInput(evt.target.value)}} value={input}/><br/>
+      <input id="chat-message-input" type="text" size="100" 
+        onChange={(evt) => {setInput(evt.target.value)}} 
+        onKeyDown={handleKeyDown}
+        value={input}/>
+      <br/>
       <button
         onClick={handleClickSendMessage}
         disabled={websocketState.status !== ReadyState.OPEN || !input}
