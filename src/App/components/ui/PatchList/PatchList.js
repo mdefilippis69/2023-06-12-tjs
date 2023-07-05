@@ -13,7 +13,7 @@ const PatchList = (props) => {
 
   const override: CSSProperties = {
     display: "inline-block",
-    margin: "0 auto"
+    margin: "5px"
   }
 
   const [trigger, setTrigger] = useState(0);
