@@ -52,7 +52,9 @@ const PatchList = (props) => {
             <td>{p.last_pipeline ? (p.last_pipeline.created_at ? new Date(p.last_pipeline.created_at).toLocaleDateString() + ' ' + new Date(p.last_pipeline.created_at).toLocaleTimeString() : '') : ''}</td>
             <td>{p.last_pipeline ? p.last_pipeline.pipeline_id : ''}</td>
             <td>{
-              p.last_pipeline ? (p.last_pipeline.status === 'success' ? <CheckCircle color='green'/> : <XCircle color='red'/>)
+              p.last_pipeline ? (p.last_pipeline.status === 'success' ? <CheckCircle color='green'/> 
+                                                                      : p.last_pipeline.status === 'created' ? <XCircle color='red'/>
+                                                                      : '')
               : ''              
             }</td>
             <td>{
