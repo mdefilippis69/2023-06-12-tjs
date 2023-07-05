@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, current } from '@reduxjs/toolkit'
 import { REST_ADR, ressourcesURI, PATCHS_ADR, patchsURI } from '../config/config';
 const initialState = {
     images: [],
@@ -9,7 +9,15 @@ const initialState = {
 const ressourcesSlice = createSlice({
     name: 'ressources',
     initialState,
-    reducers: {},
+    reducers: {
+        updatePatch: (state, action) => {           
+            var jsonPatch = JSON.parse(action.payload)
+
+            const idx = state.patchs.findIndex(p => p.id === jsonPatch.patch.id)
+            
+            state.patchs.splice(idx, 1, jsonPatch.patch)
+        }
+    },
     extraReducers:(builder)=>{
         builder.addCase('ressources/fetchRessources/fulfilled',(state,action)=>{
             state.images.splice(0);
@@ -33,6 +41,8 @@ const ressourcesSlice = createSlice({
         builder.addDefaultCase(()=>{})
     }
 });
+
+export const { updatePatch } = ressourcesSlice.actions
 
 // export const {} = ressourcesSlice.actions
 export const fetchAllRessources = createAsyncThunk('ressources/fetchRessources',

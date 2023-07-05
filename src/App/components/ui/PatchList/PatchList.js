@@ -6,7 +6,7 @@ import { CheckCircle, XCircle, PlayFill } from "react-bootstrap-icons"
 import WebsocketConnexion from '../../services/WebsocketConnexion/WebsocketConnexion'
 import { PATCH_ROOM, WS_ADR } from '../../../config/config'
 import Button from '../Button/Button'
-import { runPipeline } from '../../../store/ressourcesSlice'
+import { runPipeline, updatePatch } from '../../../store/ressourcesSlice'
 
 const PatchList = (props) => {
 
@@ -20,7 +20,7 @@ const PatchList = (props) => {
         onClose={() => {console.log('fermeture connexion')}}
         onMessage={(message) => {
           console.log('message reçu : ' + message.data)
-
+          props.updatePatch(message.data)
         }}
         triggerDisconnect={0}
         triggerSendMessage={0}
@@ -41,7 +41,7 @@ const PatchList = (props) => {
             <td>{p.version}</td>
             <td>{new Date(p.pub_date).toLocaleDateString() + ' ' + new Date(p.pub_date).toLocaleTimeString()}</td>
             <td>{p.last_pipeline.pipeline_id}</td>
-            <td>{p.statut === 'success' ? <CheckCircle color='green'/> : <XCircle color='red'/>} </td>
+            <td>{p.last_pipeline.status === 'success' ? <CheckCircle color='green'/> : <XCircle color='red'/>} </td>
             <td><Button onClick={() => {props.onRunPatch(p.id)}}><PlayFill/></Button></td>
           </tr>)}
         </tbody>
@@ -62,6 +62,8 @@ export const PatchListStoreConnected = (props) => {
     <PatchList
       {...props}
       patchs={patchs}
-      onRunPatch={(patchId) => {storeDispatch(runPipeline(patchId))}}/>
+      onRunPatch={(patchId) => {storeDispatch(runPipeline(patchId))}}
+      updatePatch={(patch) => {storeDispatch(updatePatch(patch))}}
+    />
   )
 }
