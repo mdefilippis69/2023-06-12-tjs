@@ -21,6 +21,13 @@ const ressourcesSlice = createSlice({
         updateLoading: (state, action) => {
             const idx = state.loading.findIndex(l => l.id === action.payload.id)
             state.loading.splice(idx, 1, action.payload)
+        },
+        addPatch: (state, action) => {
+            state.patchs.push(action.payload)
+        },
+        deleteEmptyPatch: (state, action) => {
+            const idx = state.patchs.findIndex(p => p.id === "")
+            if(idx > -1) { state.patchs.splice(idx, 1) }
         }
     },
     extraReducers:(builder)=>{
@@ -49,11 +56,19 @@ const ressourcesSlice = createSlice({
             const loadingIndex = state.loading.findIndex(l => l.id === action.payload.id)
             if(loadingIndex > -1){state.loading[loadingIndex] = {id: action.payload.id, loading: false}}
         })
+        builder.addCase('ressources/createPatch/fulfilled', (state, action) => {
+            state.patchs.splice(0)
+            state.patchs.push(...action.payload)
+            state.loading.splice(0)
+            state.patchs.map((p, i) => {
+                state.loading.push({id: p.id, loading: false})
+            })
+        })
         builder.addDefaultCase(()=>{})
     }
 });
 
-export const { updatePatch, updateLoading } = ressourcesSlice.actions
+export const { updatePatch, updateLoading, addPatch, deleteEmptyPatch } = ressourcesSlice.actions
 
 // export const {} = ressourcesSlice.actions
 export const fetchAllRessources = createAsyncThunk('ressources/fetchRessources',
@@ -70,6 +85,22 @@ export const fetchAllRessources = createAsyncThunk('ressources/fetchRessources',
 export const runPipeline = createAsyncThunk('ressources/runPipeline',
     async (patchId) => {
         const promisePatch = await fetch(`${PATCHS_ADR}/${patchId}${patchsURI.run}`)
+        const jsonPatch = await promisePatch.json()
+        console.log(jsonPatch)
+        return jsonPatch
+    }
+)
+
+export const createPatch = createAsyncThunk('ressources/createPatch',
+    async (version) => {
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ version: version })
+        };
+
+        const promisePatch = await fetch(`${PATCHS_ADR}${patchsURI.add}`, requestOptions)
         const jsonPatch = await promisePatch.json()
         console.log(jsonPatch)
         return jsonPatch

@@ -14,7 +14,8 @@ export const PATCHS_ADR="http://localhost:8000/patch"
 
 export const patchsURI=Object.freeze({
     all:'/all',
-    run: '/run'
+    run: '/run',
+    add: '/add'
 })
 
 export const WS_ADR="ws://localhost:8000/ws/patch/"

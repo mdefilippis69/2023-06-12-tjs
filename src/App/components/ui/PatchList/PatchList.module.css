@@ -20,3 +20,17 @@ td {
 }
 
 tr:hover {background-color: #ddd;}
+
+button {
+    border-radius: 20px;
+    padding: 5px 10px;
+    border: 1px solid
+}
+
+button:active {
+    transform: translateY(4px);
+}
+
+input {
+    width: 50px;
+}

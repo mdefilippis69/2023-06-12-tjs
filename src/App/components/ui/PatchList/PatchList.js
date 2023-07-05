@@ -6,7 +6,7 @@ import { CheckCircle, XCircle, PlayFill } from "react-bootstrap-icons"
 import WebsocketConnexion from '../../services/WebsocketConnexion/WebsocketConnexion'
 import { PATCH_ROOM, WS_ADR } from '../../../config/config'
 import Button from '../Button/Button'
-import { runPipeline, updateLoading, updatePatch } from '../../../store/ressourcesSlice'
+import { addPatch, createPatch, deleteEmptyPatch, runPipeline, updateLoading, updatePatch } from '../../../store/ressourcesSlice'
 import { ClipLoader } from 'react-spinners';
 
 const PatchList = (props) => {
@@ -15,6 +15,10 @@ const PatchList = (props) => {
     display: "inline-block",
     margin: "5px"
   }
+
+  const [edition, setEdition] = useState(false)
+
+  const [version, setVersion] = useState('')
 
   const [trigger, setTrigger] = useState(0);
 
@@ -44,21 +48,48 @@ const PatchList = (props) => {
         </thead>
         <tbody>
           {props.patchs.map((p, i) => <tr key={'patch-' + i}>
-            <td>{p.version}</td>
-            <td>{new Date(p.pub_date).toLocaleDateString() + ' ' + new Date(p.pub_date).toLocaleTimeString()}</td>
-            <td>{p.last_pipeline.pipeline_id}</td>
-            <td>{p.last_pipeline.status === 'success' ? <CheckCircle color='green'/> : <XCircle color='red'/>} </td>
-            <td>{props.loading.find(l => l.id === p.id).loading ? <ClipLoader size={20} cssOverride={override} data-testid="ws-loader"/> : <Button onClick={() => {props.onRunPatch(p.id)}}><PlayFill/></Button>}</td>
+            <td>{p.version ? p.version : <input value={version} onChange={(evt) => {setVersion(evt.target.value)}}/>}</td>
+            <td>{p.last_pipeline ? (p.last_pipeline.created_at ? new Date(p.last_pipeline.created_at).toLocaleDateString() + ' ' + new Date(p.last_pipeline.created_at).toLocaleTimeString() : '') : ''}</td>
+            <td>{p.last_pipeline ? p.last_pipeline.pipeline_id : ''}</td>
+            <td>{
+              p.last_pipeline ? (p.last_pipeline.status === 'success' ? <CheckCircle color='green'/> : <XCircle color='red'/>)
+              : ''              
+            }</td>
+            <td>{
+              props.loading.findIndex(l => l.id === p.id) > -1 ? (
+                props.loading.find(l => l.id === p.id).loading 
+                ? <ClipLoader size={20} cssOverride={override} data-testid="ws-loader"/> 
+                : <Button onClick={() => {props.onRunPatch(p.id)}}><PlayFill/></Button>
+              ) : ''
+            }</td>
           </tr>)}
         </tbody>
       </table>
+      {edition 
+        ? <div>
+            <button onClick={() => {
+              props.createPatch(version)
+              setVersion('')
+              setEdition(false)
+            }}>Valider</button>
+            <button onClick={() => {
+              setVersion('')
+              setEdition(false)
+              props.deleteEmptyPatch()
+            }}>Annuler</button>
+        </div> 
+        : <div><button onClick={() => {
+            props.addPatch({id: "", version: "", pub_date: "", last_pipeline: {pipeline_id: ""}})
+            setEdition(true)
+          }}>Ajouter</button></div>}
     </div>
   )
 }
 PatchList.propTypes = {
   patchs: PropTypes.array.isRequired,
   onRunPatch: PropTypes.func.isRequired,
-  loading: PropTypes.array.isRequired
+  loading: PropTypes.array.isRequired,
+  addPatch: PropTypes.func.isRequired
 }
 export default PatchList
 
@@ -76,6 +107,9 @@ export const PatchListStoreConnected = (props) => {
       }}
       updatePatch={(patch) => {storeDispatch(updatePatch(patch))}}
       loading={loading}
+      addPatch={(patch) => {storeDispatch(addPatch(patch))}}
+      deleteEmptyPatch={() => {storeDispatch(deleteEmptyPatch())}}
+      createPatch={(version) => storeDispatch(createPatch(version))}
     />
   )
 }
