@@ -50,7 +50,7 @@ const WebsocketConnexion = (props) => {
 
     useEffect(() => {      
       if(props.triggerSendMessage) {        
-        sendMessage(JSON.stringify({message: messageState.message, time: new Date().toLocaleTimeString()}))
+        sendMessage(JSON.stringify({type: props.messageType, message: messageState.message, time: new Date().toLocaleTimeString()}))
       }      
     }, [props.triggerSendMessage])
   
@@ -63,7 +63,8 @@ WebsocketConnexion.propTypes = {
   onClose: PropTypes.func.isRequired,
   onMessage: PropTypes.func.isRequired,
   triggerDisconnect: PropTypes.number.isRequired,
-  triggerSendMessage: PropTypes.number.isRequired
+  triggerSendMessage: PropTypes.number.isRequired,
+  messageType: PropTypes.string.isRequired
 };
 
 WebsocketConnexion.defaultProps = {};

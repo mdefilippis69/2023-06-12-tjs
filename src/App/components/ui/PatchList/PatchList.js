@@ -18,9 +18,13 @@ const PatchList = (props) => {
         address={`${WS_ADR}${PATCH_ROOM}`}
         shouldReconnect = {true}
         onClose={() => {console.log('fermeture connexion')}}
-        onMessage={(message) => {console.log('message reçu : ' + JSON.stringify(message))}}
+        onMessage={(message) => {
+          console.log('message reçu : ' + message.data)
+
+        }}
         triggerDisconnect={0}
         triggerSendMessage={0}
+        messageType='patch'
       />
       <table>
         <thead>

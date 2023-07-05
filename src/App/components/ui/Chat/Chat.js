@@ -57,6 +57,7 @@ const Chat = () => {
         onMessage={(message) => {displayMessage(message)}}
         triggerDisconnect={triggerDisconnect}
         triggerSendMessage={triggerSendMessage}
+        messageType='chat'
       />
       <span>Statut connexion : {websocketState.status === ReadyState.OPEN ? <CircleFill color='green'/>
        : websocketState.status === ReadyState.CLOSED ? <CircleFill color='red'/> 
