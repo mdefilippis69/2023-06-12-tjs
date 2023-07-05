@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, CSSProperties } from 'react'
 import PropTypes from 'prop-types'
 import style from './PatchList.module.css'
 import { useSelector, useDispatch } from 'react-redux'
@@ -6,9 +6,15 @@ import { CheckCircle, XCircle, PlayFill } from "react-bootstrap-icons"
 import WebsocketConnexion from '../../services/WebsocketConnexion/WebsocketConnexion'
 import { PATCH_ROOM, WS_ADR } from '../../../config/config'
 import Button from '../Button/Button'
-import { runPipeline, updatePatch } from '../../../store/ressourcesSlice'
+import { runPipeline, updateLoading, updatePatch } from '../../../store/ressourcesSlice'
+import { ClipLoader } from 'react-spinners';
 
 const PatchList = (props) => {
+
+  const override: CSSProperties = {
+    display: "inline-block",
+    margin: "0 auto"
+  }
 
   const [trigger, setTrigger] = useState(0);
 
@@ -42,7 +48,7 @@ const PatchList = (props) => {
             <td>{new Date(p.pub_date).toLocaleDateString() + ' ' + new Date(p.pub_date).toLocaleTimeString()}</td>
             <td>{p.last_pipeline.pipeline_id}</td>
             <td>{p.last_pipeline.status === 'success' ? <CheckCircle color='green'/> : <XCircle color='red'/>} </td>
-            <td><Button onClick={() => {props.onRunPatch(p.id)}}><PlayFill/></Button></td>
+            <td>{props.loading.find(l => l.id === p.id).loading ? <ClipLoader size={20} cssOverride={override} data-testid="ws-loader"/> : <Button onClick={() => {props.onRunPatch(p.id)}}><PlayFill/></Button>}</td>
           </tr>)}
         </tbody>
       </table>
@@ -51,19 +57,25 @@ const PatchList = (props) => {
 }
 PatchList.propTypes = {
   patchs: PropTypes.array.isRequired,
-  onRunPatch: PropTypes.func.isRequired
+  onRunPatch: PropTypes.func.isRequired,
+  loading: PropTypes.array.isRequired
 }
 export default PatchList
 
 export const PatchListStoreConnected = (props) => {
   const patchs = useSelector(s => {return s.ressources.patchs})
+  const loading = useSelector(s => {return s.ressources.loading})
   const storeDispatch = useDispatch()
   return (
     <PatchList
       {...props}
       patchs={patchs}
-      onRunPatch={(patchId) => {storeDispatch(runPipeline(patchId))}}
+      onRunPatch={(patchId) => {
+        storeDispatch(runPipeline(patchId))
+        storeDispatch(updateLoading({id: patchId, loading: true}))
+      }}
       updatePatch={(patch) => {storeDispatch(updatePatch(patch))}}
+      loading={loading}
     />
   )
 }
