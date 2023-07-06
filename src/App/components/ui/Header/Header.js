@@ -4,7 +4,7 @@ import style from './Header.module.css'
 const Header = (props) => {
   return (
     <div className={style.Header} data-testid="Header">
-     Meme<span className={style.dot}>.</span><span className={style.js}>js</span>
+     Patch<span className={style.dot}>.</span><span className={style.js}>js</span>
     </div>
   )
 }

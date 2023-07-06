@@ -4,7 +4,7 @@ import style from './Footer.module.css'
 const Footer = (props) => {
   return (
     <div className={style.Footer} data-testid="Footer">
-   orsys &copy; 2023
+   scpo &copy; 2023
     </div>
   )
 }

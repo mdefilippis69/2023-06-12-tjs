@@ -18,7 +18,7 @@ const NavBar = (props) => {
           <Nav className="me-auto">
             {/* <Link to="/thumbnail">Thumbnail</Link>
             <Link to="/editor">new</Link>
-            <Link to="/editor/1">editor id1</Link> */}
+            <Link to="/editor/1">editor id1</Link> 
             <LinkContainer to="/thumbnail">
               <Nav.Link href="/thumbnail">Thumbnail</Nav.Link>
             </LinkContainer>
@@ -27,7 +27,7 @@ const NavBar = (props) => {
             </LinkContainer>
             <LinkContainer to="/meme/1">
               <Nav.Link href="/meme/1">Edit id:1</Nav.Link>
-            </LinkContainer>
+            </LinkContainer>*/}
             <LinkContainer to="/patchs">
               <Nav.Link href="/patchs">Patchs</Nav.Link>
             </LinkContainer>

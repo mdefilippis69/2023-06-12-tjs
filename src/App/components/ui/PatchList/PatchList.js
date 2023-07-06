@@ -2,7 +2,7 @@ import React, { useState, CSSProperties } from 'react'
 import PropTypes from 'prop-types'
 import style from './PatchList.module.css'
 import { useSelector, useDispatch } from 'react-redux'
-import { CheckCircle, XCircle, PlayFill, X, XLg } from "react-bootstrap-icons"
+import { CheckCircle, XCircle, PlayFill, X, XLg, PauseFill, GearWide, QuestionCircle } from "react-bootstrap-icons"
 import WebsocketConnexion from '../../services/WebsocketConnexion/WebsocketConnexion'
 import { PATCH_ROOM, WS_ADR } from '../../../config/config'
 import Button from '../Button/Button'
@@ -49,13 +49,16 @@ const PatchList = (props) => {
         </thead>
         <tbody>
           {props.patchs.map((p, i) => <tr key={'patch-' + i}>
-            <td>{p.version ? p.version : <input value={version} onChange={(evt) => {setVersion(evt.target.value)}}/>}</td>
+            <td>{p.version ? p.version : <input autoFocus value={version} onChange={(evt) => {setVersion(evt.target.value)}}/>}</td>
             <td>{p.last_pipeline ? (p.last_pipeline.created_at ? new Date(p.last_pipeline.created_at).toLocaleDateString() + ' ' + new Date(p.last_pipeline.created_at).toLocaleTimeString() : '') : ''}</td>
             <td>{p.last_pipeline ? p.last_pipeline.pipeline_id : ''}</td>
             <td>{
               p.last_pipeline ? (p.last_pipeline.status === 'success' ? <CheckCircle color='green'/> 
-                                                                      : p.last_pipeline.status === 'created' ? <XCircle color='red'/>
-                                                                      : '')
+                                                                      : p.last_pipeline.status === 'created' ? <GearWide color='blue'/>
+                                                                      : p.last_pipeline.status === 'pending' ? <PauseFill color='orange'></PauseFill>
+                                                                      : p.last_pipeline.status === 'running' ? <ClipLoader size={20} cssOverride={override} data-testid="pipeline-running"/>
+                                                                      : p.last_pipeline.status === 'failed' ? <XCircle color='red'/>
+                                                                      : <QuestionCircle/>)
               : ''              
             }</td>
             <td>{
