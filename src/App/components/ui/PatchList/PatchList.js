@@ -2,11 +2,11 @@ import React, { useState, CSSProperties } from 'react'
 import PropTypes from 'prop-types'
 import style from './PatchList.module.css'
 import { useSelector, useDispatch } from 'react-redux'
-import { CheckCircle, XCircle, PlayFill } from "react-bootstrap-icons"
+import { CheckCircle, XCircle, PlayFill, X, XLg } from "react-bootstrap-icons"
 import WebsocketConnexion from '../../services/WebsocketConnexion/WebsocketConnexion'
 import { PATCH_ROOM, WS_ADR } from '../../../config/config'
 import Button from '../Button/Button'
-import { addPatch, createPatch, deleteEmptyPatch, runPipeline, updateLoading, updatePatch } from '../../../store/ressourcesSlice'
+import { addPatch, createPatch, deleteEmptyPatch, deletePatch, runPipeline, updateLoading, updatePatch } from '../../../store/ressourcesSlice'
 import { ClipLoader } from 'react-spinners';
 
 const PatchList = (props) => {
@@ -44,6 +44,7 @@ const PatchList = (props) => {
             <th>Id pipeline</th>
             <th>Statut</th>
             <th>Exécuter</th>
+            <th>Supprimer</th>
           </tr>
         </thead>
         <tbody>
@@ -64,6 +65,7 @@ const PatchList = (props) => {
                 : <Button onClick={() => {props.onRunPatch(p.id)}}><PlayFill/></Button>
               ) : ''
             }</td>
+            <td>{p.id ? <Button onClick={() => props.deletePatch(p.id)}><XLg></XLg></Button> : ''}</td>
           </tr>)}
         </tbody>
       </table>
@@ -91,7 +93,8 @@ PatchList.propTypes = {
   patchs: PropTypes.array.isRequired,
   onRunPatch: PropTypes.func.isRequired,
   loading: PropTypes.array.isRequired,
-  addPatch: PropTypes.func.isRequired
+  addPatch: PropTypes.func.isRequired,
+  deletePatch: PropTypes.func.isRequired
 }
 export default PatchList
 
@@ -112,6 +115,7 @@ export const PatchListStoreConnected = (props) => {
       addPatch={(patch) => {storeDispatch(addPatch(patch))}}
       deleteEmptyPatch={() => {storeDispatch(deleteEmptyPatch())}}
       createPatch={(version) => storeDispatch(createPatch(version))}
+      deletePatch={(id) => storeDispatch(deletePatch(id))}
     />
   )
 }

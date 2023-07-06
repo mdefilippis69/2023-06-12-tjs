@@ -64,6 +64,14 @@ const ressourcesSlice = createSlice({
                 state.loading.push({id: p.id, loading: false})
             })
         })
+        builder.addCase('ressources/deletePatch/fulfilled', (state, action) => {
+            state.patchs.splice(0)
+            state.patchs.push(...action.payload)
+            state.loading.splice(0)
+            state.patchs.map((p, i) => {
+                state.loading.push({id: p.id, loading: false})
+            })
+        })
         builder.addDefaultCase(()=>{})
     }
 });
@@ -103,6 +111,18 @@ export const createPatch = createAsyncThunk('ressources/createPatch',
         const promisePatch = await fetch(`${PATCHS_ADR}${patchsURI.add}`, requestOptions)
         const jsonPatch = await promisePatch.json()
         console.log(jsonPatch)
+        return jsonPatch
+    }
+)
+
+export const deletePatch = createAsyncThunk('ressources/deletePatch',
+    async(id) => {
+        const requestOptions = {
+            method: 'DELETE'
+        }
+        
+        const promisePatch = await fetch(`${PATCHS_ADR}/${id}${patchsURI.delete}`, requestOptions)
+        const jsonPatch = await promisePatch.json()
         return jsonPatch
     }
 )
