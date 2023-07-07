@@ -16,9 +16,20 @@ export const patchsURI=Object.freeze({
     all:'/all',
     run: '/run',
     add: '/add',
-    delete: '/delete'
+    delete: '/delete',
+    token: '/token'
 })
 
 export const WS_ADR="ws://localhost:8000/ws/patch/"
 export const CHAT_ROOM_NAME="chat/"
 export const PATCH_ROOM = "patch/"
+
+export const GITLAB_ADR="https://gitlab.sciences-po.fr/api/v4/projects"
+
+export const GITLAB_PROJECT = '491'
+
+export const gitlabURI = Object.freeze({
+    pipelines: '/pipelines',
+    jobs: '/jobs',
+    trace: '/trace'
+})

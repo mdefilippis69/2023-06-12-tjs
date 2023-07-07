@@ -1,10 +1,12 @@
 import { createSlice, createAsyncThunk, current } from '@reduxjs/toolkit'
-import { REST_ADR, ressourcesURI, PATCHS_ADR, patchsURI } from '../config/config';
+import { REST_ADR, ressourcesURI, PATCHS_ADR, patchsURI, GITLAB_ADR, GITLAB_PROJECT, gitlabURI } from '../config/config';
 const initialState = {
     images: [],
     memes: [],
     patchs: [],
-    loading: []
+    loading: [],
+    token: '',
+    logs: ''
 }
 
 const ressourcesSlice = createSlice({
@@ -64,6 +66,10 @@ const ressourcesSlice = createSlice({
                 state.loading.push({id: p.id, loading: false})
             })
         })
+        builder.addCase('ressources/createPatch/rejected', (state, action) => {            
+            const idx = state.patchs.findIndex(p => p.id === "")
+            if(idx > -1) { state.patchs.splice(idx, 1) }
+        })
         builder.addCase('ressources/deletePatch/fulfilled', (state, action) => {
             state.patchs.splice(0)
             state.patchs.push(...action.payload)
@@ -71,6 +77,9 @@ const ressourcesSlice = createSlice({
             state.patchs.map((p, i) => {
                 state.loading.push({id: p.id, loading: false})
             })
+        })
+        builder.addCase('ressources/token/fulfilled', (state, action) => {
+            state.token = action.payload
         })
         builder.addDefaultCase(()=>{})
     }
@@ -126,5 +135,41 @@ export const deletePatch = createAsyncThunk('ressources/deletePatch',
         return jsonPatch
     }
 )
+
+export const getGitlabToken = createAsyncThunk('ressources/token',
+    async() => {
+        const promiseToken = await fetch(`${PATCHS_ADR}${patchsURI.token}`)
+        const jsonToken = await promiseToken.json()
+        return jsonToken.token
+    }
+)
+
+export const getJobLogs = createAsyncThunk('ressources/jobs',
+    async(data) => {        
+        const requestOptions = {
+            headers: {'PRIVATE-TOKEN': data.token}
+        }
+        const logs = await fetch(`${GITLAB_ADR}/${GITLAB_PROJECT}${gitlabURI.pipelines}/${data.pipeline_id}${gitlabURI.jobs}`, requestOptions)
+            .then(response => response.json())
+            .then(json => json.find(j => j.name === "patch").id)
+            .then(id => fetch(`${GITLAB_ADR}/${GITLAB_PROJECT}${gitlabURI.jobs}/${id}${gitlabURI.trace}`, requestOptions))            
+            .then(logs => logs.blob())
+            .then(logs => fetch(`${PATCHS_ADR}/logs`, {method: 'POST', body: logs}))
+            /*.then(blob => downloadFile(blob))*/                
+        
+        return logs
+    }
+)
+
+const downloadFile = (blob) => {
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.style.display = 'none'
+    a.href = url
+    a.download = 'logs.txt'
+    a.click()
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
 
 export default ressourcesSlice.reducer

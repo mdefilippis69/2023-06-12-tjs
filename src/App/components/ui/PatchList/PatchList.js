@@ -2,11 +2,11 @@ import React, { useState, CSSProperties } from 'react'
 import PropTypes from 'prop-types'
 import style from './PatchList.module.css'
 import { useSelector, useDispatch } from 'react-redux'
-import { CheckCircle, XCircle, PlayFill, X, XLg, PauseFill, GearWide, QuestionCircle } from "react-bootstrap-icons"
+import { CheckCircle, XCircle, PlayFill, XLg, PauseFill, GearWide, QuestionCircle, FileText } from "react-bootstrap-icons"
 import WebsocketConnexion from '../../services/WebsocketConnexion/WebsocketConnexion'
 import { PATCH_ROOM, WS_ADR } from '../../../config/config'
 import Button from '../Button/Button'
-import { addPatch, createPatch, deleteEmptyPatch, deletePatch, runPipeline, updateLoading, updatePatch } from '../../../store/ressourcesSlice'
+import { addPatch, createPatch, deleteEmptyPatch, deletePatch, getJobLogs, runPipeline, updateLoading, updatePatch } from '../../../store/ressourcesSlice'
 import { ClipLoader } from 'react-spinners';
 
 const PatchList = (props) => {
@@ -19,8 +19,6 @@ const PatchList = (props) => {
   const [edition, setEdition] = useState(false)
 
   const [version, setVersion] = useState('')
-
-  const [trigger, setTrigger] = useState(0);
 
   return (
     <div className={style.PatchList} data-testid="PatchList">
@@ -45,6 +43,7 @@ const PatchList = (props) => {
             <th>Statut</th>
             <th>Exécuter</th>
             <th>Supprimer</th>
+            <th>Logs</th>
           </tr>
         </thead>
         <tbody>
@@ -69,6 +68,9 @@ const PatchList = (props) => {
               ) : ''
             }</td>
             <td>{p.id ? <Button onClick={() => props.deletePatch(p.id)}><XLg></XLg></Button> : ''}</td>
+            <td>{p.last_pipeline ? <Button onClick={() =>{
+                props.getLogs({token: props.token, pipeline_id: p.last_pipeline.pipeline_id})
+              }}><FileText></FileText></Button> : ''}</td>
           </tr>)}
         </tbody>
       </table>
@@ -86,7 +88,7 @@ const PatchList = (props) => {
             }}>Annuler</button>
         </div> 
         : <div><button onClick={() => {
-            props.addPatch({id: "", version: "", pub_date: "", last_pipeline: {pipeline_id: ""}})
+            props.addPatch({id: "", version: "", pub_date: "", last_pipeline: null})
             setEdition(true)
           }}>Ajouter</button></div>}
     </div>
@@ -97,18 +99,22 @@ PatchList.propTypes = {
   onRunPatch: PropTypes.func.isRequired,
   loading: PropTypes.array.isRequired,
   addPatch: PropTypes.func.isRequired,
-  deletePatch: PropTypes.func.isRequired
+  deletePatch: PropTypes.func.isRequired,
+  token: PropTypes.string.isRequired,
+  getLogs: PropTypes.func.isRequired
 }
 export default PatchList
 
 export const PatchListStoreConnected = (props) => {
   const patchs = useSelector(s => {return s.ressources.patchs})
   const loading = useSelector(s => {return s.ressources.loading})
+  const token = useSelector(s => {return s.ressources.token})
   const storeDispatch = useDispatch()
   return (
     <PatchList
       {...props}
       patchs={patchs}
+      token={token}
       onRunPatch={(patchId) => {
         storeDispatch(runPipeline(patchId))
         storeDispatch(updateLoading({id: patchId, loading: true}))
@@ -119,6 +125,9 @@ export const PatchListStoreConnected = (props) => {
       deleteEmptyPatch={() => {storeDispatch(deleteEmptyPatch())}}
       createPatch={(version) => storeDispatch(createPatch(version))}
       deletePatch={(id) => storeDispatch(deletePatch(id))}
+      getLogs={(data) => {
+        storeDispatch(getJobLogs(data))
+      }}
     />
   )
 }
