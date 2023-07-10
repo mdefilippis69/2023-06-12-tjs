@@ -103,7 +103,6 @@ export const runPipeline = createAsyncThunk('ressources/runPipeline',
     async (patchId) => {
         const promisePatch = await fetch(`${PATCHS_ADR}/${patchId}${patchsURI.run}`)
         const jsonPatch = await promisePatch.json()
-        console.log(jsonPatch)
         return jsonPatch
     }
 )
@@ -154,19 +153,19 @@ export const getJobLogs = createAsyncThunk('ressources/jobs',
             .then(json => json.find(j => j.name === "patch").id)
             .then(id => fetch(`${GITLAB_ADR}/${GITLAB_PROJECT}${gitlabURI.jobs}/${id}${gitlabURI.trace}`, requestOptions))            
             .then(logs => logs.blob())
-            .then(logs => fetch(`${PATCHS_ADR}/logs`, {method: 'POST', body: logs}))
-            /*.then(blob => downloadFile(blob))*/                
+            /*.then(logs => fetch(`${PATCHS_ADR}/logs`, {method: 'POST', body: logs}))*/
+            .then(blob => downloadFile(blob, data.pipeline_id))         
         
         return logs
     }
 )
 
-const downloadFile = (blob) => {
+const downloadFile = (blob, pipeline_id) => {
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.style.display = 'none'
     a.href = url
-    a.download = 'logs.txt'
+    a.download = 'pipeline_'+pipeline_id+'_'+new Date().toLocaleDateString('fr-CA')+'.log'
     a.click()
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
