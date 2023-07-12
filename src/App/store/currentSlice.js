@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { emptyMeme } from 'orsys-tjs-meme'
-import { REST_ADR, ressourcesURI } from '../config/config';
-const initialState = emptyMeme
+import {  PATCHS_ADR, patchsURI } from '../config/config';
+const initialState = {}
 
 const currentSlice = createSlice({
     name: 'current',
@@ -13,7 +12,7 @@ const currentSlice = createSlice({
         },
         clear: (state) => {
             delete state.id
-            Object.assign(state, emptyMeme)
+            Object.assign(state, {})
         }
     },
     extraReducers:(builder)=>{
@@ -25,18 +24,17 @@ const currentSlice = createSlice({
 
 export const { update, clear } = currentSlice.actions
 // update(unMeme) -> {type:'current/update', payload:unMeme} 
-export const saveCurrent = createAsyncThunk('current/save', async (meme) => {
-   console.log(`saveCurren`,meme);
-    const promiseCurrent = await fetch(
-        `${REST_ADR}${ressourcesURI.memes}${undefined !== meme.id ? '/' + meme.id : ''}`,
-        {
-            method:undefined!==meme.id?'PUT':'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(meme)
-        })
-        return await promiseCurrent.json()
+export const saveCurrent = createAsyncThunk('current/updatePatch', 
+async(data) => {
+    const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    }
+    const promisePatch = await fetch(`${PATCHS_ADR}${patchsURI.update}`, requestOptions)
+    const jsonPatch = promisePatch.json()
+    return jsonPatch
+}
+)
 
-})
 export default currentSlice.reducer

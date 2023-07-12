@@ -1,0 +1,17 @@
+.PatchForm {
+    text-align: center;
+}
+
+.PatchForm>form>input {
+    width: 40%;
+    margin: 5px;
+}
+
+.PatchForm>form>button {
+    width: 10%;
+    border-radius: 0;
+}
+
+#submitbtn {
+    width: 10%;
+}

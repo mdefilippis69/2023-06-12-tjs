@@ -1,18 +1,20 @@
 .Chat {}
 
-textarea {
+.Chat>textarea {
     margin: 5px;
     pointer-events: None;
 }
 
-input {
+.Chat>input {
     margin: 5px;
+    width: 40%;
 }
 
-button {
+.Chat>button {
     margin: 5px;
+    border-radius: 20px;
 }
 
-span {
+.Chat>span {
     margin: 10px
 }

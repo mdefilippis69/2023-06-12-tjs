@@ -17,8 +17,9 @@ export const patchsURI=Object.freeze({
     run: '/run',
     add: '/add',
     delete: '/delete',
-    token: '/token'
-})
+    token: '/token',
+    update: '/update'
+    })
 
 export const WS_ADR="ws://localhost:8000/ws/patch/"
 export const CHAT_ROOM_NAME="chat/"

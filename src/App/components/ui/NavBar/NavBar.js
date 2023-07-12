@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import style from './NavBar.module.css'
 import '../../../../../node_modules/bootstrap/dist/css/bootstrap.css'
 // facultatif si non usage des applications js de bootstrap
@@ -28,8 +27,8 @@ const NavBar = (props) => {
             <LinkContainer to="/meme/1">
               <Nav.Link href="/meme/1">Edit id:1</Nav.Link>
             </LinkContainer>*/}
-            <LinkContainer to="/patchs">
-              <Nav.Link href="/patchs">Patchs</Nav.Link>
+            <LinkContainer to="/patch">
+              <Nav.Link href="/patch">Patchs</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/chat">
               <Nav.Link href="/chat">Chat</Nav.Link>
