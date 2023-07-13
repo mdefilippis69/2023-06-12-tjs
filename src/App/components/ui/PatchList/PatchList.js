@@ -76,12 +76,12 @@ const PatchList = (props) => {
                 props.getLogs({token: props.token, pipeline_id: p.last_pipeline.pipeline_id})
               }}><FileText></FileText></Button> : ''}</td>
             <td>{p.id ? <Button onClick={() => {
-                                            props.updateCurrentPatch(p);
                                             navigate("/patch/" + p.id)
                                           }}><GearFill></GearFill></Button> : ''}</td>
           </tr>)}
         </tbody>
       </table>
+      <br/>
       {edition 
         ? <div>
             <button onClick={() => {

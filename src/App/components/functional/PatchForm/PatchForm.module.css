@@ -2,16 +2,23 @@
     text-align: center;
 }
 
-.PatchForm>form>input {
-    width: 40%;
+.PatchForm>table {
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 50px;
+}
+
+.PatchForm>table>thead>tr>th{
+    text-align: center;
+}
+
+.PatchForm>div{
+    margin: 20px;
+}
+
+.PatchForm>button {
+    padding: 5px, 10px;
+    border: 1px solid;
     margin: 5px;
-}
-
-.PatchForm>form>button {
-    width: 10%;
-    border-radius: 0;
-}
-
-#submitbtn {
-    width: 10%;
 }

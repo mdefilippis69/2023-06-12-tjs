@@ -1,0 +1,17 @@
+.EditableCell {
+    width: 100%;
+}
+
+.EditableCell>div{
+    width: 100%;
+}
+
+.EditableCell>div>input{
+    width: 80%;
+}
+
+.EditableCell>span{    
+    display: inline-block;
+    min-height: 30px;
+    min-width: 400px;
+}

@@ -8,15 +8,15 @@ const PatchEditor = (props) => {
   const storeDispatch = useDispatch()
   const params = useParams()
   const patchs = useSelector(s=>s.ressources.patchs)
-  useEffect(() => {
+  useEffect(() => {    
     if(undefined!==params.id) {
       const patch = patchs.find(p => p.id === Number(params.id))
       if(undefined!==patch){
         storeDispatch(update(patch))
-      }            
+      }
     }
     else {
-      storeDispatch(update({}))
+      storeDispatch(update({variables: []}))
     }
   }, [params, patchs, storeDispatch])
   
